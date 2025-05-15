@@ -1,21 +1,39 @@
-import React from 'react';
+/*import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
   return(
     <div>
-      <h2 className='title'>PennyWise</h2>
+      <h2>Add Expense</h2>
       <div>
-        <input type="text" placeholder='Username'/>
-        <input type="text" placeholder='Password'/>
+          <p>Item: </p>
+          <input type="text" />
+          <p>Amount: </p>
+          <input type="text" />
+          <p>Date: </p>
+          <input type="text" />
+          <button>Add</button>
       </div>
-      <div className='button'>
-        <button>Log In</button>
-        <button>Sign Up</button>
-      </div>
+      
+    </div>
+  );
+}
+
+export default App;*/
+
+import "./App.css";
+import TaskManager from "./components/TaskManager";
+
+function App() {
+  return (
+    <div className="App">
+      <main>
+        <TaskManager />
+      </main>
     </div>
   );
 }
 
 export default App;
+
