@@ -4,40 +4,48 @@ import { Expense } from "../types";
 import ExpenseComponent from "./ExpenseComponent";
 
 const ExpenseManager = () => {
-  const [expense, setExpense] = useState<Expense>({
-    item: "",
-    amount: "",
-    date: "",
-  });
-
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    setExpense((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!expense.item || !expense.amount || !expense.date) return;
-
-    setExpenses((prev) => [...prev, expense]);
-
-    setExpense({
-      item: "",
-      amount: "",
-      date: "",
+    //storing current input
+    const [expense, setExpense] = useState<Expense>({
+        item: "",
+        amount: "",
+        date: "",
     });
-  };
+    //storing the list of all expenses added
+    const [expenses, setExpenses] = useState<Expense[]>([]);
+    
+    /*called when there is an input change 
+    takes input's attributes and value*/
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
 
-  const handleDelete = (indexToDelete: number) => {
-    setExpenses((prev) => prev.filter((_, index) => index !== indexToDelete));
-  };
+        //updates expense state
+        setExpense((prev) => ({
+        ...prev,
+        [name]: value,
+        }));
+    };
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        //stop page from reloading
+        e.preventDefault();
+
+        //check if any inputs are empty 
+        if (!expense.item || !expense.amount || !expense.date) return;
+
+        setExpenses((prev) => [...prev, expense]);
+
+        //reset expense to empty for next input
+        setExpense({
+        item: "",
+        amount: "",
+        date: "",
+        });
+    };
+
+    //deletes expense by its index
+    const handleDelete = (indexToDelete: number) => {
+        setExpenses((prev) => prev.filter((_, index) => index !== indexToDelete));
+    };
 
   return (
     <div>
