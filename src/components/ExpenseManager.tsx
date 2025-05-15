@@ -38,7 +38,7 @@ const ExpenseManager = () => {
   return (
     <div>
       <h2>Expense Manager</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="off">
         <label>Item: </label>
         <input
           type="text"
@@ -49,7 +49,7 @@ const ExpenseManager = () => {
         <br />
         <label>Amount: </label>
         <input
-          type="text"
+          type="number"
           name="amount"
           value={expense.amount}
           onChange={handleChange}
@@ -57,7 +57,7 @@ const ExpenseManager = () => {
         <br />
         <label>Date: </label>
         <input
-          type="text"
+          type="date"
           name="date"
           value={expense.date}
           onChange={handleChange}
