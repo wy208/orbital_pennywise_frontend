@@ -1,3 +1,5 @@
-export interface Task {
-  title: string;
+export interface Expense {
+  item: string;
+  amount: string;
+  date: string;
 }

@@ -23,13 +23,13 @@ function App() {
 export default App;*/
 
 import "./App.css";
-import TaskManager from "./components/TaskManager";
+import ExpenseManager from "./components/ExpenseManager";
 
 function App() {
   return (
     <div className="App">
       <main>
-        <TaskManager />
+        <ExpenseManager />
       </main>
     </div>
   );
