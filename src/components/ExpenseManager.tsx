@@ -35,6 +35,10 @@ const ExpenseManager = () => {
     });
   };
 
+  const handleDelete = (indexToDelete: number) => {
+    setExpenses((prev) => prev.filter((_, index) => index !== indexToDelete));
+  };
+
   return (
     <div>
       <h2>Expense Manager</h2>
@@ -75,7 +79,11 @@ const ExpenseManager = () => {
         </thead>
         <tbody>
           {expenses.map((exp, index) => (
-            <ExpenseComponent key={index} expense={exp} />
+            <ExpenseComponent 
+                key={index} 
+                expense={exp} 
+                onDelete={() => handleDelete(index)}
+            />
           ))}
         </tbody>
       </table>
