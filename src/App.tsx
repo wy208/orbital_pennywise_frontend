@@ -25,15 +25,21 @@ export default App;*/
 import "./App.css";
 import ExpenseManager from "./components/ExpenseManager";
 
+
+
+
 function App() {
   return (
     <div className="App">
+      <h1>PennyWise</h1>
       <main>
         <ExpenseManager />
       </main>
+
     </div>
+    
   );
 }
-
+ 
 export default App;
 
