@@ -47,6 +47,7 @@ const ExpenseManager = () => {
       setExpenses((prev) => prev.filter((_, index) => index !== indexToDelete));
   };
 
+  //to calculate summary 
   function calculateTotal(expenses: Expense[]): number {
     return expenses.reduce((total, expense) => {
       return total + parseFloat(expense.amount);
@@ -104,7 +105,6 @@ const ExpenseManager = () => {
       </table>
       <h2> Summary</h2>
       <p>Total spent: ${calculateTotal(expenses)}</p>
-
     </div>
   );
 };
