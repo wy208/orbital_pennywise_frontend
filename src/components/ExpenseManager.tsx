@@ -3,15 +3,18 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { Expense } from "../types";
 import ExpenseComponent from "./ExpenseComponent";
 
-const ExpenseManager = () => {
+interface ExpenseManagerProps {
+  expenses: Expense[];
+  setExpenses: React.Dispatch<React.SetStateAction<Expense[]>>;
+}
+
+const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
   //storing current input
   const [expense, setExpense] = useState<Expense>({
       item: "",
       amount: "",
       date: "",
   });
-  //storing the list of all expenses added
-  const [expenses, setExpenses] = useState<Expense[]>([]);
   
   /*called when there is an input change 
   takes input's attributes and value*/
@@ -53,7 +56,6 @@ const ExpenseManager = () => {
       return total + parseFloat(expense.amount);
     }, 0);
   }
-
 
   return (
     <div>
@@ -103,10 +105,10 @@ const ExpenseManager = () => {
           ))}
         </tbody>
       </table>
-      <h2> Summary</h2>
-      <p>Total spent: ${calculateTotal(expenses)}</p>
     </div>
   );
 };
 
+
 export default ExpenseManager;
+
