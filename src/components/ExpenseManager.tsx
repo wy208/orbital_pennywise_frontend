@@ -14,6 +14,8 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
       item: "",
       amount: "",
       date: "",
+      note: "",
+      receiptUrl: ""
   });
   
   /*called when there is an input change 
@@ -42,6 +44,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
       item: "",
       amount: "",
       date: "",
+      note:""
       });
   };
 
@@ -50,12 +53,19 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
       setExpenses((prev) => prev.filter((_, index) => index !== indexToDelete));
   };
 
-  //to calculate summary 
-  function calculateTotal(expenses: Expense[]): number {
-    return expenses.reduce((total, expense) => {
-      return total + parseFloat(expense.amount);
-    }, 0);
-  }
+  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    setExpense(prev => ({
+      ...prev,
+      receiptUrl: reader.result as string
+    }));
+  };
+  reader.readAsDataURL(file);
+};
 
   return (
     <div>
@@ -84,6 +94,21 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
           value={expense.date}
           onChange={handleChange}
         />
+        <br />
+        <label>Notes: </label>
+        <input
+          type="text"
+          name="note"
+          value={expense.note}
+          onChange={handleChange}
+        />
+        <br />
+        <label>Receipt: </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileUpload}
+        />
         <button type="submit">Add Expense</button>
       </form>
 
@@ -93,6 +118,8 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
             <th>Item</th>
             <th>Amount</th>
             <th>Date</th>
+            <th>Note</th>
+            <th>Receipt</th>
           </tr>
         </thead>
         <tbody>

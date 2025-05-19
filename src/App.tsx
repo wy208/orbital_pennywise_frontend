@@ -1,51 +1,20 @@
-/*import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
-  return(
-    <div>
-      <h2>Add Expense</h2>
-      <div>
-          <p>Item: </p>
-          <input type="text" />
-          <p>Amount: </p>
-          <input type="text" />
-          <p>Date: </p>
-          <input type="text" />
-          <button>Add</button>
-      </div>
-      
-    </div>
-  );
-}
-
-export default App;*/
-
 import "./App.css";
 import { useState } from "react";
 import { Expense } from "./types";
-import ExpenseManager from "./components/ExpenseManager";
-import SummaryCalc from "./components/SummaryCalc"
-import React from 'react';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
 import ExpensePage from "./expensepage";
 import SummaryPage from "./summarypage";
+import BudgetPage from "./budgetpage";
 
 import logo from "./images/pennywise_logo.png"
-
-
-function About() {
-  return <h2>About Page</h2>;
-}
 
 function App() {
   //storing the list of all expenses added
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <div>
         <img src={logo} alt="logo" />
       </div>
@@ -57,6 +26,9 @@ function App() {
           <li>
             <Link to="/summary">Summary</Link>
           </li>
+          <li>
+            <Link to="/budget">Budget and Challenges</Link>
+          </li>
         </ul>
       </nav>
 
@@ -66,22 +38,9 @@ function App() {
           setExpenses={setExpenses}/>} />
         <Route path="/summary" element={<SummaryPage
           expenses={expenses} />} />
-      </Routes>
-    
-      {/* <div className="App">
-        <h1>PennyWise</h1>
-        <main>
-          <ExpenseManager 
-            expenses={expenses} 
-            setExpenses={setExpenses}/>
-        </main>
-        <SummaryCalc 
-            expenses={expenses} />
-
-      </div> */}
-      
+        <Route path="/budget" element={<BudgetPage/> } />
+      </Routes>      
     </Router>
-    
   );
 }
  
