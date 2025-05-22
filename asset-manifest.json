@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/orbital_pennywise/static/css/main.e6c13ad2.css",
+    "main.js": "/orbital_pennywise/static/js/main.8b625aca.js",
+    "static/js/453.ed3810f9.chunk.js": "/orbital_pennywise/static/js/453.ed3810f9.chunk.js",
+    "static/media/pennywise_logo.png": "/orbital_pennywise/static/media/pennywise_logo.759704a2be660901df2c.png",
+    "index.html": "/orbital_pennywise/index.html",
+    "main.e6c13ad2.css.map": "/orbital_pennywise/static/css/main.e6c13ad2.css.map",
+    "main.8b625aca.js.map": "/orbital_pennywise/static/js/main.8b625aca.js.map",
+    "453.ed3810f9.chunk.js.map": "/orbital_pennywise/static/js/453.ed3810f9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.8b625aca.js"
+  ]
+}
