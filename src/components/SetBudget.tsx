@@ -1,24 +1,43 @@
-import React, { useState } from 'react';
+// 
 
-function SetBudget() {
-  const [budget, setBudget] = useState('');
+import { useState } from 'react';
+
+interface SetBudgetProps {
+  currentBudget: number | null;
+  onBudgetSubmit: (amount: number) => void;
+}
+
+function SetBudget({ currentBudget, onBudgetSubmit }: SetBudgetProps) {
+  const [budgetInput, setBudgetInput] = useState(
+    currentBudget?.toString() || ''
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Budget set to: $${budget}`);
+    const amount = parseFloat(budgetInput);
+    if (!isNaN(amount)) {
+      onBudgetSubmit(amount);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>Set Your Budget:</label>
-      <input
-        type="number"
-        value={budget}
-        onChange={(e) => setBudget(e.target.value)}
-        placeholder="Enter amount"
-      />
-      <button type="submit">Save</button>
-    </form>
+    <div className="set-budget">
+      <form onSubmit={handleSubmit}>
+        <label>
+          Set Your Budget:
+          <input
+            type="number"
+            value={budgetInput}
+            onChange={(e) => setBudgetInput(e.target.value)}
+            placeholder="Enter amount"
+            min="0"
+          />
+        </label>
+        <button type="submit">
+          {currentBudget ? 'Update Budget' : 'Save Budget'}
+        </button>
+      </form>
+    </div>
   );
 }
 

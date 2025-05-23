@@ -13,6 +13,14 @@ function App() {
   //storing the list of all expenses added
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
+  //for budgeting
+  const [budget, setBudget] = useState<number | null>(null);
+  const [totalSpending, setTotalSpending] = useState(0); // You'll need to track this from expenses
+
+  const handleBudgetChange = (newBudget: number) => {
+    setBudget(newBudget);
+  }
+
   return (
     <Router basename={process.env.PUBLIC_URL}>
       <div>
@@ -38,7 +46,11 @@ function App() {
           setExpenses={setExpenses}/>} />
         <Route path="/summary" element={<SummaryPage
           expenses={expenses} />} />
-        <Route path="/budget" element={<BudgetPage/> } />
+        <Route path="/budget" element={
+          <BudgetPage 
+            budget={budget} 
+            onBudgetChange={handleBudgetChange}
+            totalSpending={totalSpending}/> } />
       </Routes>      
     </Router>
   );

@@ -1,4 +1,3 @@
-// ExpenseManager.tsx
 import { useState, ChangeEvent, FormEvent } from "react";
 import { Expense } from "../types";
 import ExpenseComponent from "./ExpenseComponent";
