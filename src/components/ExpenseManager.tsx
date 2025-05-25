@@ -8,106 +8,91 @@ interface ExpenseManagerProps {
 }
 
 const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
-  //storing current input
   const [expense, setExpense] = useState<Expense>({
+    item: "",
+    amount: "",
+    date: "",
+    note: "",
+    receiptUrl: "",
+    category: "", 
+  });
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setExpense((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!expense.item || !expense.amount || !expense.date) return;
+
+    setExpenses((prev) => [...prev, expense]);
+
+    setExpense({
       item: "",
       amount: "",
       date: "",
       note: "",
-      receiptUrl: ""
-  });
-  
-  /*called when there is an input change 
-  takes input's attributes and value*/
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-
-      //updates expense state
-      setExpense((prev) => ({
-      ...prev,
-      [name]: value,
-      }));
+      receiptUrl: "",
+      category: "",
+    });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-      //stop page from reloading
-      e.preventDefault();
-
-      //check if any inputs are empty 
-      if (!expense.item || !expense.amount || !expense.date) return;
-
-      setExpenses((prev) => [...prev, expense]);
-
-      //reset expense to empty for next input
-      setExpense({
-      item: "",
-      amount: "",
-      date: "",
-      note:""
-      });
-  };
-
-  //deletes expense by its index
   const handleDelete = (indexToDelete: number) => {
-      setExpenses((prev) => prev.filter((_, index) => index !== indexToDelete));
+    setExpenses((prev) => prev.filter((_, index) => index !== indexToDelete));
   };
 
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    setExpense(prev => ({
-      ...prev,
-      receiptUrl: reader.result as string
-    }));
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setExpense((prev) => ({
+        ...prev,
+        receiptUrl: reader.result as string,
+      }));
+    };
+    reader.readAsDataURL(file);
   };
-  reader.readAsDataURL(file);
-};
 
   return (
     <div>
       <h2>Expenses</h2>
       <form onSubmit={handleSubmit} autoComplete="off">
         <label>Item: </label>
-        <input
-          type="text"
-          name="item"
-          value={expense.item}
-          onChange={handleChange}
-        />
+        <input type="text" name="item" value={expense.item} onChange={handleChange} />
         <br />
+
         <label>Amount: </label>
-        <input
-          type="number"
-          name="amount"
-          value={expense.amount}
-          onChange={handleChange}
-        />
+        <input type="number" name="amount" value={expense.amount} onChange={handleChange} />
         <br />
+
         <label>Date: </label>
-        <input
-          type="date"
-          name="date"
-          value={expense.date}
-          onChange={handleChange}
-        />
+        <input type="date" name="date" value={expense.date} onChange={handleChange} />
         <br />
+
+        <label>Category: </label> 
+        <select name="category" value={expense.category} onChange={handleChange}>
+          <option value="">Select a category</option>
+          <option value="Food">Food</option>
+          <option value="Transport">Transport</option>
+          <option value="Groceries">Groceries</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Bills">Bills</option>
+          <option value="Other">Other</option>
+        </select>
+        <br />
+
         <label>Notes: </label>
-        <input
-          type="text"
-          name="note"
-          value={expense.note}
-          onChange={handleChange}
-        />
+        <input type="text" name="note" value={expense.note} onChange={handleChange} />
         <br />
+
         <label>Receipt: </label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileUpload}
-        />
+        <input type="file" accept="image/*" onChange={handleFileUpload} />
         <button type="submit">Add Expense</button>
       </form>
 
@@ -117,6 +102,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
             <th>Item</th>
             <th>Amount</th>
             <th>Date</th>
+            <th>Category</th>
             <th>Note</th>
             <th>Receipt</th>
           </tr>
@@ -124,9 +110,9 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
         <tbody>
           {expenses.map((exp, index) => (
             <ExpenseComponent 
-                key={index} 
-                expense={exp} 
-                onDelete={() => handleDelete(index)}
+              key={index}
+              expense={exp}
+              onDelete={() => handleDelete(index)}
             />
           ))}
         </tbody>
@@ -135,6 +121,4 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
   );
 };
 
-
 export default ExpenseManager;
-
