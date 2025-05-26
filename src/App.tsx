@@ -41,9 +41,13 @@ function App() {
       </nav>
 
       <Routes>
-        <Route path="/" element={<ExpensePage 
-          expenses={expenses} 
-          setExpenses={setExpenses}/>} />
+        <Route path="/" element={
+  <ExpensePage 
+    expenses={expenses} 
+    setExpenses={setExpenses}
+    budget={budget} 
+  />
+} />
         <Route path="/summary" element={<SummaryPage
           expenses={expenses} />} />
         <Route path="/budget" element={

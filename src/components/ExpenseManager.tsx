@@ -5,16 +5,17 @@ import ExpenseComponent from "./ExpenseComponent";
 interface ExpenseManagerProps {
   expenses: Expense[];
   setExpenses: React.Dispatch<React.SetStateAction<Expense[]>>;
+  budget: number | null;
 }
 
-const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
+const ExpenseManager = ({ expenses, setExpenses, budget }: ExpenseManagerProps) => {
   const [expense, setExpense] = useState<Expense>({
     item: "",
     amount: "",
     date: "",
     note: "",
     receiptUrl: "",
-    category: "", 
+    category: "",
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -59,9 +60,35 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
     reader.readAsDataURL(file);
   };
 
+  // ✅ Insight logic
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  const totalSpent = expenses
+    .filter(exp => exp.date.startsWith(currentMonth))
+    .reduce((sum, exp) => sum + parseFloat(exp.amount), 0);
+  const percentageUsed = budget
+    ? Math.round((totalSpent / budget) * 100)
+    : null;
+
   return (
     <div>
       <h2>Expenses</h2>
+
+      {/* ✅ Insight Display */}
+      {budget !== null && (
+        <div className="insight-box" style={{
+          background: "#f5f5f5",
+          padding: "1rem",
+          borderRadius: "8px",
+          marginBottom: "1rem"
+        }}>
+          <p>
+            You’ve spent <strong>${totalSpent}</strong> of your{" "}
+            <strong>${budget}</strong> budget this month.
+            {percentageUsed !== null && ` (${percentageUsed}%)`}
+          </p>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} autoComplete="off">
         <label>Item: </label>
         <input type="text" name="item" value={expense.item} onChange={handleChange} />
@@ -75,7 +102,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
         <input type="date" name="date" value={expense.date} onChange={handleChange} />
         <br />
 
-        <label>Category: </label> 
+        <label>Category: </label>
         <select name="category" value={expense.category} onChange={handleChange}>
           <option value="">Select a category</option>
           <option value="Food">Food</option>
@@ -122,3 +149,4 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
 };
 
 export default ExpenseManager;
+
