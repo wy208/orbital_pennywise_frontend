@@ -2,7 +2,8 @@ export interface Expense {
   item: string;
   amount: string;
   date: string;
-  note: string;
-  receiptUrl?: string;
+  notes: string;
+  receipt_url?: string;
   category?: string;
+  id?: number;
 }

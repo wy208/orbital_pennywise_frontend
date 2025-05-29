@@ -1,5 +1,6 @@
 import "./App.css";
-import { useState } from "react";
+import { useState,  useEffect } from "react";
+import axios from 'axios';
 import { Expense } from "./types";
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
@@ -13,13 +14,18 @@ function App() {
   //storing the list of all expenses added
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
-  //for budgeting
+  // //for budgeting
   const [budget, setBudget] = useState<number | null>(null);
   const [totalSpending, setTotalSpending] = useState(0); // You'll need to track this from expenses
 
   const handleBudgetChange = (newBudget: number) => {
     setBudget(newBudget);
   }
+
+  // const handleAddExpense = (expense: Expense) => {
+  //   setExpenses([...expenses, expense]);
+  //   setTotalSpending(prev => prev + Number(expense.amount));
+  // };
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
@@ -42,21 +48,18 @@ function App() {
 
       <Routes>
         <Route path="/" element={
-  <ExpensePage 
-    expenses={expenses} 
-    setExpenses={setExpenses}
-    budget={budget} 
-  />
-} />
-        <Route path="/summary" element={<SummaryPage
-          expenses={expenses} />} />
+          <ExpensePage expenses={expenses} setExpenses={setExpenses} />}/>
+        <Route path="/summary" element={
+          <SummaryPage
+            expenses={expenses} />} />
         <Route path="/budget" element={
           <BudgetPage 
             budget={budget} 
             onBudgetChange={handleBudgetChange}
             totalSpending={totalSpending}/> } />
-      </Routes>      
+      </Routes>     
     </Router>
+  
   );
 }
  

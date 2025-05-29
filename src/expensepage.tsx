@@ -1,20 +1,40 @@
+// import { Expense } from "./types";
+// import ExpenseManager from "./components/ExpenseManager";
+
+// interface ExpenseManagerProps {
+//   expenses: Expense[];
+//   setExpenses: React.Dispatch<React.SetStateAction<Expense[]>>;
+// }
+
+// function ExpensePage({ expenses, setExpenses }: ExpenseManagerProps) {
+//     return (
+//         <div className="App">
+//                 <main>
+//                   <ExpenseManager 
+//                     expenses={expenses} 
+//                     setExpenses={setExpenses}/>
+//                 </main>
+//         </div>
+//     )
+// }
+
+// export default ExpensePage;
+
 import { Expense } from "./types";
 import ExpenseManager from "./components/ExpenseManager";
 
 interface ExpensePageProps {
   expenses: Expense[];
   setExpenses: React.Dispatch<React.SetStateAction<Expense[]>>;
-  budget: number | null; // ✅ Add this line
 }
 
-function ExpensePage({ expenses, setExpenses, budget }: ExpensePageProps) {
+function ExpensePage({ expenses, setExpenses }: ExpensePageProps) {
   return (
     <div className="App">
       <main>
         <ExpenseManager 
           expenses={expenses} 
-          setExpenses={setExpenses}
-          budget={budget}
+          setExpenses={setExpenses} 
         />
       </main>
     </div>
