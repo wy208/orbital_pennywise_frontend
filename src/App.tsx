@@ -1,67 +1,78 @@
 import "./App.css";
-import { useState,  useEffect } from "react";
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "./components/Firebase"; 
+
 import { Expense } from "./types";
-import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
 import ExpensePage from "./expensepage";
 import SummaryPage from "./summarypage";
 import BudgetPage from "./budgetpage";
+import AuthPage from "./components/AuthPage"; 
 
-import logo from "./images/pennywise_logo.png"
+import logo from "./images/pennywise_logo.png";
 
 function App() {
-  //storing the list of all expenses added
   const [expenses, setExpenses] = useState<Expense[]>([]);
-
-  // //for budgeting
   const [budget, setBudget] = useState<number | null>(null);
-  const [totalSpending, setTotalSpending] = useState(0); // You'll need to track this from expenses
+  const [totalSpending, setTotalSpending] = useState(0);
+
+  const [user, setUser] = useState<any>(null);
 
   const handleBudgetChange = (newBudget: number) => {
     setBudget(newBudget);
-  }
+  };
 
-  // const handleAddExpense = (expense: Expense) => {
-  //   setExpenses([...expenses, expense]);
-  //   setTotalSpending(prev => prev + Number(expense.amount));
-  // };
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return unsubscribe;
+  }, []);
+
+  const handleLogout = () => {
+    signOut(auth);
+  };
+
+  // If not logged in, show login/signup
+  if (!user) {
+    return <AuthPage onAuthSuccess={() => {}} />;
+  }
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
       <div>
         <img src={logo} alt="logo" />
       </div>
+
       <nav>
         <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/summary">Summary</Link>
-          </li>
-          <li>
-            <Link to="/budget">Budget and Challenges</Link>
-          </li>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/summary">Summary</Link></li>
+          <li><Link to="/budget">Budget and Challenges</Link></li>
+          <li><button onClick={handleLogout}>Logout</button></li>
         </ul>
       </nav>
 
       <Routes>
         <Route path="/" element={
-          <ExpensePage expenses={expenses} setExpenses={setExpenses} />}/>
+          <ExpensePage expenses={expenses} setExpenses={setExpenses} budget={budget} />
+        } />
         <Route path="/summary" element={
-          <SummaryPage
-            expenses={expenses} />} />
+          <SummaryPage expenses={expenses} />
+        } />
         <Route path="/budget" element={
           <BudgetPage 
-            budget={budget} 
+            budget={budget}
             onBudgetChange={handleBudgetChange}
-            totalSpending={totalSpending}/> } />
-      </Routes>     
+            totalSpending={totalSpending}
+          />
+        } />
+      </Routes>
     </Router>
-  
   );
 }
- 
+
 export default App;
 
