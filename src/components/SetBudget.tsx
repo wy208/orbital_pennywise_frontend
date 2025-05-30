@@ -1,20 +1,27 @@
 import { useState } from 'react';
 
-interface SetBudgetProps {
-  currentBudget: number | null;
-  onBudgetSubmit: (amount: number) => void;
+interface CategoryBudget {
+  category: string;
+  amount: number;
 }
 
-function SetBudget({ currentBudget, onBudgetSubmit }: SetBudgetProps) {
-  const [budgetInput, setBudgetInput] = useState(
-    currentBudget?.toString() || ''
-  );
+interface SetBudgetProps {
+  currentBudgets: Record<string, number>; 
+  onBudgetSubmit: (category: string, amount: number) => void;
+}
+
+const categories = ["Food", "Transport", "Groceries", "Shopping", "Bills", "Other"];
+
+function SetBudget({ currentBudgets, onBudgetSubmit }: SetBudgetProps) {
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const [budgetInput, setBudgetInput] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const amount = parseFloat(budgetInput);
     if (!isNaN(amount)) {
-      onBudgetSubmit(amount);
+      onBudgetSubmit(selectedCategory, amount);
+      setBudgetInput('');
     }
   };
 
@@ -22,7 +29,16 @@ function SetBudget({ currentBudget, onBudgetSubmit }: SetBudgetProps) {
     <div className="set-budget">
       <form onSubmit={handleSubmit}>
         <label>
-          Set Your Budget:
+          Category:
+          <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </label>
+        <br />
+        <label>
+          Budget for {selectedCategory}:
           <input
             type="number"
             value={budgetInput}
@@ -32,7 +48,7 @@ function SetBudget({ currentBudget, onBudgetSubmit }: SetBudgetProps) {
           />
         </label>
         <button type="submit">
-          {currentBudget ? 'Update Budget' : 'Save Budget'}
+          {currentBudgets[selectedCategory] ? 'Update Budget' : 'Save Budget'}
         </button>
       </form>
     </div>

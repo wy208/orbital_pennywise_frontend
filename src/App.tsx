@@ -2,26 +2,31 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "./components/Firebase"; 
+import { auth } from "./components/Firebase";
 
 import { Expense } from "./types";
 
 import ExpensePage from "./expensepage";
 import SummaryPage from "./summarypage";
 import BudgetPage from "./budgetpage";
-import AuthPage from "./components/AuthPage"; 
+import AuthPage from "./components/AuthPage";
 
 import logo from "./images/pennywise_logo.png";
 
 function App() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [budget, setBudget] = useState<number | null>(null);
-  const [totalSpending, setTotalSpending] = useState(0);
+
+  // ✅ Changed from single budget to per-category budgets
+  const [budgets, setBudgets] = useState<Record<string, number>>({});
 
   const [user, setUser] = useState<any>(null);
 
-  const handleBudgetChange = (newBudget: number) => {
-    setBudget(newBudget);
+  // ✅ New budget update handler for category-based budgets
+  const handleBudgetChange = (category: string, amount: number) => {
+    setBudgets((prev) => ({
+      ...prev,
+      [category]: amount,
+    }));
   };
 
   useEffect(() => {
@@ -35,7 +40,6 @@ function App() {
     signOut(auth);
   };
 
-  // If not logged in, show login/signup
   if (!user) {
     return <AuthPage onAuthSuccess={() => {}} />;
   }
@@ -56,23 +60,27 @@ function App() {
       </nav>
 
       <Routes>
-        <Route path="/" element={
-          <ExpensePage expenses={expenses} setExpenses={setExpenses} budget={budget} />
-        } />
-        <Route path="/summary" element={
-          <SummaryPage expenses={expenses} />
-        } />
-        <Route path="/budget" element={
-          <BudgetPage 
-            budget={budget}
-            onBudgetChange={handleBudgetChange}
-            totalSpending={totalSpending}
-          />
-        } />
+        <Route
+          path="/"
+          element={<ExpensePage expenses={expenses} setExpenses={setExpenses} />}
+        />
+        <Route
+          path="/summary"
+          element={<SummaryPage expenses={expenses} />}
+        />
+        <Route
+          path="/budget"
+          element={
+            <BudgetPage
+              budgets={budgets}
+              onBudgetChange={handleBudgetChange}
+              expenses={expenses}
+            />
+          }
+        />
       </Routes>
     </Router>
   );
 }
 
 export default App;
-
