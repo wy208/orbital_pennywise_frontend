@@ -6,4 +6,5 @@ export interface Expense {
   receipt_url?: string;
   category?: string;
   id?: number;
+  user_email?: string;
 }
