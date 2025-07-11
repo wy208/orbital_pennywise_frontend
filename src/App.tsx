@@ -2,7 +2,6 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import { Expense } from "./types";
-import { Goal } from "./types";
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import { onAuthStateChanged, signOut, getAuth } from "firebase/auth";
 import { auth } from "./components/Firebase";
@@ -13,39 +12,26 @@ import BudgetPage from "./budgetpage";
 import AvatarPage from "./avatarpage";
 import AuthPage from "./components/AuthPage";
 
-import logo from "./images/pennywise_logo.png"
+import logo from "./images/pennywise_logo.png";
 
 function App() {
-  //storing the list of all expenses added
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [goals, setGoals] = useState<Goal[]>([]);
-
-  // for budgeting
-  const [totalBudget, setTotalBudget] = useState<number>(0);
-  const [categoryBudgets, setCategoryBudgets] = useState<Record<string, number>>({
-    Food: 0,
-    Transport: 0,
-    Groceries: 0,
-    Shopping: 0,
-    Bills: 0,
-    Other: 0,
-  });
-
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
     });
-    
+
     const user = getAuth().currentUser;
     const today = new Date().toISOString().slice(0, 10);
-    if (!user) return;
+    if (user) {
+      axios.post("http://localhost:3001/api/login-reward", {
+        email: user.email,
+        date: today,
+      });
+    }
 
-    axios.post("http://localhost:3001/api/login-reward", {
-      email: user.email,
-      date: today,
-    });
     return unsubscribe;
   }, []);
 
@@ -71,7 +57,7 @@ function App() {
             <Link to="/summary">Summary</Link>
           </li>
           <li>
-            <Link to="/budget">Budget and Challenges</Link>
+            <Link to="/budget">Budget</Link>
           </li>
           <li>
             <Link to="/avatar">Avatar</Link>
@@ -81,21 +67,12 @@ function App() {
       </nav>
 
       <Routes>
-        <Route path="/" element={
-          <ExpensePage expenses={expenses} setExpenses={setExpenses} />} />
-        <Route path="/summary" element={
-          <SummaryPage
-            expenses={expenses} />} />
-        <Route path="/budget" element={
-          <BudgetPage
-            expenses={expenses}
-            goals={goals}
-            setGoals={setGoals} />} />
-        <Route path="/avatar" element={
-          <AvatarPage />} />
+        <Route path="/" element={<ExpensePage expenses={expenses} setExpenses={setExpenses} />} />
+        <Route path="/summary" element={<SummaryPage expenses={expenses} />} />
+        <Route path="/budget" element={<BudgetPage expenses={expenses} />} />
+        <Route path="/avatar" element={<AvatarPage />} />
       </Routes>
-    </Router >
-
+    </Router>
   );
 }
 
