@@ -1,8 +1,7 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent, useRef } from "react";
 import axios from "axios";
 import { Expense } from "../types";
-import ExpenseTable from "./ExpenseTable"; 
-import { useRef } from "react";
+import ExpenseTable from "./ExpenseTable";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 
 interface ExpenseManagerProps {
@@ -10,9 +9,7 @@ interface ExpenseManagerProps {
   setExpenses: React.Dispatch<React.SetStateAction<Expense[]>>;
 }
 
-
 const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
-  
   const [expense, setExpense] = useState<Expense>({
     item: "",
     amount: "",
@@ -23,26 +20,25 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
   });
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
   const [tableData, setTableData] = useState<Expense[]>([]);
 
   useEffect(() => {
-  const auth = getAuth();
+    const auth = getAuth();
 
-  const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
-    if (user && user.email) {
-      try {
-        const response = await axios.get(`http://localhost:3001/api/expenses?email=${user.email}`);
-        setTableData(response.data);
-        setExpenses(response.data);
-      } catch (err) {
-        console.error("Error fetching user expenses:", err);
+    const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
+      if (user && user.email) {
+        try {
+          const response = await axios.get(`http://localhost:3001/api/expenses?email=${user.email}`);
+          setTableData(response.data);
+          setExpenses(response.data);
+        } catch (err) {
+          console.error("Error fetching user expenses:", err);
+        }
       }
-    }
-  });
+    });
 
-  return () => unsubscribe();
-}, [setExpenses]);
+    return () => unsubscribe();
+  }, [setExpenses]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -67,7 +63,6 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    
     e.preventDefault();
 
     if (!expense.item || !expense.amount || !expense.date || !expense.category) return;
@@ -114,7 +109,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
       receipt_url: "",
       category: ""
     });
-    
+
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -123,46 +118,60 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
   return (
     <div>
       <h2>Expenses</h2>
-      
 
       <form onSubmit={handleSubmit} autoComplete="off">
-        <label>Item: </label>
-        <input type="text" name="item" value={expense.item} onChange={handleChange} />
-        <br />
+        <div>
+          <label>Item: </label>
+          <input type="text" name="item" value={expense.item} onChange={handleChange} />
+        </div>
 
-        <label>Amount: </label>
-        <input type="number" name="amount" value={expense.amount} onChange={handleChange} />
-        <br />
+        <div>
+          <label>Amount: </label>
+          <input type="number" name="amount" value={expense.amount} onChange={handleChange} />
+        </div>
 
-        <label>Date: </label>
-        <input type="date" name="date" value={expense.date} onChange={handleChange} />
-        <br />
+        <div>
+          <label>Date: </label>
+          <input
+            type="date"
+            name="date"
+            value={expense.date}
+            onChange={handleChange}
+            max={new Date().toISOString().split("T")[0]}
+          />
+        </div>
 
-        <label>Category: </label>
-        <select name="category" value={expense.category} onChange={handleChange}>
-          <option value="">Select a category</option>
-          <option value="Food">Food</option>
-          <option value="Transport">Transport</option>
-          <option value="Groceries">Groceries</option>
-          <option value="Shopping">Shopping</option>
-          <option value="Bills">Bills</option>
-          <option value="Other">Other</option>
-        </select>
-        <br />
+        <div>
+          <label>Category: </label>
+          <select name="category" value={expense.category} onChange={handleChange}>
+            <option value="">Select a category</option>
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Groceries">Groceries</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Bills">Bills</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
 
-        <label>Notes: </label>
-        <input type="text" name="notes" value={expense.notes} onChange={handleChange} />
-        <br />
+        <div>
+          <label>Notes: </label>
+          <input type="text" name="notes" value={expense.notes} onChange={handleChange} />
+        </div>
 
-        <label>Receipt: </label>
-        <input type="file"  onChange={handleFileUpload} ref={fileInputRef} accept="image/*" />
-        <br />
+        <div>
+          <label>Receipt: </label>
+          <input type="file" onChange={handleFileUpload} ref={fileInputRef} accept="image/*" />
+        </div>
 
-        <button type="submit">Add Expense</button>
+        <div>
+          <button type="submit">Add Expense</button>
+        </div>
       </form>
 
       <ExpenseTable tableData={tableData} setTableData={setTableData} />
     </div>
   );
 };
+
 export default ExpenseManager;
