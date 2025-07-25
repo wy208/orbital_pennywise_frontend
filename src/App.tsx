@@ -1,8 +1,8 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import { Expense } from "./types";
-import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { onAuthStateChanged, signOut, getAuth } from "firebase/auth";
 import { auth } from "./components/Firebase";
 
@@ -50,14 +50,29 @@ function App() {
           <img src={logo} alt="logo" className="h-12" />
         </header>
 
-        <nav className="px-4">
-          <ul className="flex gap-4">
-            <li><Link to="/" className="text-purple-700 hover:underline">Home</Link></li>
-            <li><Link to="/summary" className="text-purple-700 hover:underline">Summary</Link></li>
-            <li><Link to="/budget" className="text-purple-700 hover:underline">Budget</Link></li>
-            <li><Link to="/avatar" className="text-purple-700 hover:underline">Avatar</Link></li>
-            <li><button onClick={handleLogout} className="text-purple-700 underline">Logout</button></li>
-          </ul>
+        {/* ✅ Styled Navigation Bar */}
+        <nav className="flex flex-wrap gap-3 px-4 py-3">
+          {[
+            { to: "/", label: "Home" },
+            { to: "/summary", label: "Summary" },
+            { to: "/budget", label: "Budget" },
+            { to: "/avatar", label: "Avatar" }
+          ].map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className="border border-purple-300 rounded px-4 py-2 bg-white text-purple-700 hover:bg-purple-200 font-medium shadow-sm"
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          <button
+            onClick={handleLogout}
+            className="border border-purple-300 rounded px-4 py-2 bg-white text-purple-700 hover:bg-purple-200 font-medium shadow-sm"
+          >
+            Logout
+          </button>
         </nav>
 
         <main className="px-4 py-6">
