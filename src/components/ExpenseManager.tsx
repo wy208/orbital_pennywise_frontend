@@ -21,6 +21,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [tableData, setTableData] = useState<Expense[]>([]);
+  const baseUrl = process.env.REACT_APP_API_URL;
   
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
     const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
       if (user && user.email && baseUrl) {
         try {
-          const response = await axios.get(`https://orbital-pennywise-backend.onrender.com/api/expenses?email=${user.email}`);
+          const response = await axios.get(`${baseUrl}/api/expenses?email=${user.email}`);
           setTableData(response.data);
           setExpenses(response.data);
         } catch (err) {
