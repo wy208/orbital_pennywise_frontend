@@ -2,12 +2,12 @@ import { PieChart, Pie, Tooltip, Cell } from 'recharts';
 
 interface BudgetStatusProps {
   budget: number | null;
-  totalSpending: number;
+  totalSpending: number | null;
 }
 
 function BudgetStatus({ budget, totalSpending }: BudgetStatusProps) {
-  if (!budget) {
-    return <div>No budget set</div>;
+  if (budget == null || totalSpending == null) {
+    return <div>No budget data available</div>;
   }
 
   const percentageUsed = (totalSpending / budget) * 100;
@@ -31,28 +31,25 @@ function BudgetStatus({ budget, totalSpending }: BudgetStatusProps) {
   ];
 
   return (
-    <div className={`budget-status`}>
+    <div className="budget-status">
       <h3>Budget Status</h3>
       <p>{statusMessage}</p>
       <PieChart width={600} height={250}>
-          <Pie
-            data={budgetData}
-            cx="50%"
-            cy="50%"
-            labelLine={true}
-            outerRadius={100}
-            fill="#8884d8"
-            dataKey="value"
-            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-          >
-            <Cell fill="#0088FE" />  
-            <Cell fill="#00C49F" />
-            {budgetData.map((entry, index) => (
-              <Cell key={`cell-${index}`}  />
-            ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
+        <Pie
+          data={budgetData}
+          cx="50%"
+          cy="50%"
+          labelLine={true}
+          outerRadius={100}
+          fill="#8884d8"
+          dataKey="value"
+          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+        >
+          <Cell fill="#0088FE" />
+          <Cell fill="#00C49F" />
+        </Pie>
+        <Tooltip />
+      </PieChart>
       <p>${totalSpending.toFixed(2)} of ${budget.toFixed(2)} used</p>
       <p>({Math.round(percentageUsed)}%)</p>
     </div>
