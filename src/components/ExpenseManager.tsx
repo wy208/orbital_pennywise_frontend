@@ -29,7 +29,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
     const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
       if (user && user.email && baseUrl) {
         try {
-          const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/expenses?email=${user.email}`);
+          const response = await axios.get(`${baseUrl}/api/expenses?email=${user.email}`);
           setTableData(response.data);
           setExpenses(response.data);
         } catch (err) {
@@ -65,15 +65,25 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("🚀 Submitting expense:", expense);
 
-    if (!expense.item || !expense.amount || !expense.date || !expense.category || !baseUrl) return;
+    if (!expense.item || !expense.amount || !expense.date || !expense.category || !baseUrl) {
+      console.error("❌ Missing fields:", {
+        item: expense.item,
+        amount: expense.amount,
+        date: expense.date,
+        category: expense.category,
+        baseUrl
+      });
+      return;
+    }
 
     try {
       const user = getAuth().currentUser;
       const user_email = user?.email;
 
       if (!user_email) {
-        console.error("No authenticated user.");
+        console.error("❌ No authenticated user.");
         return;
       }
 
@@ -82,7 +92,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
         user_email: user_email
       };
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/expenses`, {
+      const response = await fetch(`${baseUrl}/api/expenses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -91,15 +101,16 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
       });
 
       if (response.ok) {
-        const updated = await fetch(`${process.env.REACT_APP_API_URL}/api/expenses?email=${user_email}`);
+        console.log("✅ POST successful.");
+        const updated = await fetch(`${baseUrl}/api/expenses?email=${user_email}`);
         const data = await updated.json();
         setExpenses(data);
         setTableData(data);
       } else {
-        console.error("POST failed:", await response.text());
+        console.error("❌ POST failed:", await response.text());
       }
     } catch (err) {
-      console.error("Error submitting:", err);
+      console.error("❌ Error submitting:", err);
     }
 
     setExpense({
