@@ -14,10 +14,11 @@ function AvatarPage() {
 
   const user = getAuth().currentUser;
   const user_email = user?.email;
+  const baseUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user_email) return;
+      if (!user_email || !baseUrl) return;
       try {
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/profile?email=${user_email}`);
         setCoins(res.data.coins);
@@ -30,11 +31,11 @@ function AvatarPage() {
     };
 
     fetchProfile();
-  }, [user_email]);
+  }, [user_email, baseUrl]);
 
   const handleBuy = async (itemType: keyof Avatar, itemName: string, cost: number) => {
-    if (coins < cost) {
-      alert("Not enough coins!");
+    if (coins < cost || !baseUrl || !user_email) {
+      alert("Not enough coins or invalid user.");
       return;
     }
 

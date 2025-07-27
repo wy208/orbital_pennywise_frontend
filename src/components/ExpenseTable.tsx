@@ -9,12 +9,17 @@ interface ExpenseTableProps {
 
 const ExpenseTable = ({ tableData, setTableData }: ExpenseTableProps) => {
   const [error, setError] = useState<string | null>(null);
+  const baseUrl = process.env.REACT_APP_API_URL;
 
   const handleDelete = async (id: number) => {
     const confirmDelete = window.confirm("Delete this expense?");
-    if (confirmDelete) {
+    if (confirmDelete && baseUrl) {
       try {
+<<<<<<< HEAD
         await axios.delete(`${process.env.REACT_APP_API_URL}/api/expenses/${id}`);
+=======
+        await axios.delete(`${baseUrl}/api/expenses/${id}`);
+>>>>>>> 858d5d5eac630024cb24272e08521982d0b75c23
         setTableData(prev => prev.filter(exp => exp.id !== id));
       } catch (err: any) {
         setError(err.message || "Failed to delete expense.");
