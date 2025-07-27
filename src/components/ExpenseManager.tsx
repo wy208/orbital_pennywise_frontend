@@ -82,7 +82,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
         user_email: user_email
       };
 
-      const response = await fetch("${process.env.REACT_APP_API_URL}/api/expenses", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/expenses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
