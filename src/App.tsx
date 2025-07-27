@@ -9,7 +9,6 @@ import { auth } from "./components/Firebase";
 import ExpensePage from "./expensepage";
 import SummaryPage from "./summarypage";
 import BudgetPage from "./budgetpage";
-import AvatarPage from "./avatarpage";
 import AuthPage from "./components/AuthPage";
 
 import logo from "./images/pennywise_logo.png";
@@ -56,7 +55,6 @@ function App() {
             { to: "/", label: "Home" },
             { to: "/summary", label: "Summary" },
             { to: "/budget", label: "Budget" },
-            { to: "/avatar", label: "Avatar" }
           ].map((link) => (
             <Link
               key={link.to}
@@ -80,7 +78,6 @@ function App() {
             <Route path="/" element={<ExpensePage expenses={expenses} setExpenses={setExpenses} />} />
             <Route path="/summary" element={<SummaryPage expenses={expenses} />} />
             <Route path="/budget" element={<BudgetPage expenses={expenses} />} />
-            <Route path="/avatar" element={<AvatarPage />} />
           </Routes>
         </main>
       </div>
