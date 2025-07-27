@@ -21,7 +21,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [tableData, setTableData] = useState<Expense[]>([]);
-  const baseUrl = process.env.REACT_APP_API_URL;
+  
 
   useEffect(() => {
     const auth = getAuth();
@@ -29,7 +29,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
     const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
       if (user && user.email && baseUrl) {
         try {
-          const response = await axios.get(`${baseUrl}/api/expenses?email=${user.email}`);
+          const response = await axios.get(`https://orbital-pennywise-backend.onrender.com/api/expenses?email=${user.email}`);
           setTableData(response.data);
           setExpenses(response.data);
         } catch (err) {
@@ -65,10 +65,10 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("🚀 Submitting expense:", expense);
+    console.log("Submitting expense:", expense);
 
     if (!expense.item || !expense.amount || !expense.date || !expense.category || !baseUrl) {
-      console.error("❌ Missing fields:", {
+      console.error("Missing fields:", {
         item: expense.item,
         amount: expense.amount,
         date: expense.date,
@@ -83,7 +83,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
       const user_email = user?.email;
 
       if (!user_email) {
-        console.error("❌ No authenticated user.");
+        console.error("No authenticated user.");
         return;
       }
 
@@ -107,10 +107,10 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
         setExpenses(data);
         setTableData(data);
       } else {
-        console.error("❌ POST failed:", await response.text());
+        console.error("POST failed:", await response.text());
       }
     } catch (err) {
-      console.error("❌ Error submitting:", err);
+      console.error("Error submitting:", err);
     }
 
     setExpense({
