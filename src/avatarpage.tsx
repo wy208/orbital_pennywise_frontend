@@ -19,7 +19,7 @@ function AvatarPage() {
     const fetchProfile = async () => {
       if (!user_email) return;
       try {
-        const res = await axios.get(`http://localhost:3001/api/profile?email=${user_email}`);
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/profile?email=${user_email}`);
         setCoins(res.data.coins);
         setAvatar(res.data.avatar || {});
       } catch (err) {
@@ -42,7 +42,7 @@ function AvatarPage() {
     const updatedCoins = coins - cost;
 
     try {
-      await axios.post("http://localhost:3001/api/profile/update", {
+      await axios.post("${process.env.REACT_APP_API_URL}/api/profile/update", {
         email: user_email,
         coins: updatedCoins,
         avatar: updatedAvatar,

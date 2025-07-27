@@ -28,7 +28,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
     const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
       if (user && user.email) {
         try {
-          const response = await axios.get(`http://localhost:3001/api/expenses?email=${user.email}`);
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/expenses?email=${user.email}`);
           setTableData(response.data);
           setExpenses(response.data);
         } catch (err) {
@@ -81,7 +81,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
         user_email: user_email
       };
 
-      const response = await fetch("http://localhost:3001/api/expenses", {
+      const response = await fetch("${process.env.REACT_APP_API_URL}/api/expenses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -90,7 +90,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
       });
 
       if (response.ok) {
-        const updated = await fetch(`http://localhost:3001/api/expenses?email=${user_email}`);
+        const updated = await fetch(`${process.env.REACT_APP_API_URL}/api/expenses?email=${user_email}`);
         const data = await updated.json();
         setExpenses(data);
         setTableData(data);

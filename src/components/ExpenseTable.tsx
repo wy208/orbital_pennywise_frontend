@@ -14,7 +14,7 @@ const ExpenseTable = ({ tableData, setTableData }: ExpenseTableProps) => {
     const confirmDelete = window.confirm("Delete this expense?");
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:3001/api/expenses/${id}`);
+        await axios.delete(`${process.env.REACT_APP_API_URL}/api/expenses/${id}`);
         setTableData(prev => prev.filter(exp => exp.id !== id));
       } catch (err: any) {
         setError(err.message || "Failed to delete expense.");

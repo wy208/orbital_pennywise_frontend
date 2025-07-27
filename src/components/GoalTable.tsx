@@ -14,7 +14,7 @@ const GoalTable = ({ tableData, setTableData }: GoalTableProps) => {
     const confirmDelete = window.confirm("Delete this goal?");
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:3001/api/goals/${id}`);
+        await axios.delete(`${process.env.REACT_APP_API_URL}/api/goals/${id}`);
         setTableData(prev => prev.filter(goa => goa.id !== id));
       } catch (err: any) {
         setError(err.message || "Failed to delete goal.");
