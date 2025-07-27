@@ -52,7 +52,7 @@ function App() {
   }
 
   return (
-    <Router basename={process.env.PUBLIC_URL}>
+    <Router>
       <div className="min-h-screen bg-purple-100 text-gray-900">
         <header className="p-4 flex items-center justify-between">
           <img src={logo} alt="logo" className="h-12" />
