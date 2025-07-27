@@ -21,6 +21,7 @@ function BudgetPage({ expenses }: BudgetPageProps) {
   const [userEmail, setUserEmail] = useState("");
   const now = new Date();
   const month = now.toISOString().slice(0, 7);
+  const baseUrl = process.env.REACT_APP_API_URL;
 
   const { totalSpent, categorySpending } = useMemo(() => {
     const spending: Record<string, number> = {};
@@ -41,9 +42,14 @@ function BudgetPage({ expenses }: BudgetPageProps) {
   }, [expenses, month]);
 
   const fetchAndSetBudgetData = async (email: string) => {
+    if (!baseUrl) {
+      console.error("❌ Missing REACT_APP_API_URL");
+      return;
+    }
+
     try {
       const budgetRes = await fetch(
-        `http://localhost:3001/api/budget?userEmail=${email}&month=${month}`
+        `${baseUrl}/api/budget?userEmail=${email}&month=${month}`
       );
       const budgetData = await budgetRes.json();
 
@@ -76,7 +82,7 @@ function BudgetPage({ expenses }: BudgetPageProps) {
   }, []);
 
   const saveBudget = (total: number, categories: Record<string, number>) => {
-    if (!userEmail) return;
+    if (!userEmail || !baseUrl) return;
 
     const payload = {
       userEmail,
@@ -85,7 +91,7 @@ function BudgetPage({ expenses }: BudgetPageProps) {
       category_budgets: categories,
     };
 
-    fetch("http://localhost:3001/api/budget", {
+    fetch(`${baseUrl}/api/budget`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

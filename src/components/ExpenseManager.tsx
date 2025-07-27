@@ -21,14 +21,15 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [tableData, setTableData] = useState<Expense[]>([]);
+  const baseUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const auth = getAuth();
 
     const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
-      if (user && user.email) {
+      if (user && user.email && baseUrl) {
         try {
-          const response = await axios.get(`http://localhost:3001/api/expenses?email=${user.email}`);
+          const response = await axios.get(`${baseUrl}/api/expenses?email=${user.email}`);
           setTableData(response.data);
           setExpenses(response.data);
         } catch (err) {
@@ -38,7 +39,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
     });
 
     return () => unsubscribe();
-  }, [setExpenses]);
+  }, [setExpenses, baseUrl]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -65,7 +66,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!expense.item || !expense.amount || !expense.date || !expense.category) return;
+    if (!expense.item || !expense.amount || !expense.date || !expense.category || !baseUrl) return;
 
     try {
       const user = getAuth().currentUser;
@@ -81,7 +82,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
         user_email: user_email
       };
 
-      const response = await fetch("http://localhost:3001/api/expenses", {
+      const response = await fetch(`${baseUrl}/api/expenses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -90,7 +91,7 @@ const ExpenseManager = ({ expenses, setExpenses }: ExpenseManagerProps) => {
       });
 
       if (response.ok) {
-        const updated = await fetch(`http://localhost:3001/api/expenses?email=${user_email}`);
+        const updated = await fetch(`${baseUrl}/api/expenses?email=${user_email}`);
         const data = await updated.json();
         setExpenses(data);
         setTableData(data);

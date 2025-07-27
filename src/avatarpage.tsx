@@ -14,12 +14,13 @@ function AvatarPage() {
 
   const user = getAuth().currentUser;
   const user_email = user?.email;
+  const baseUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user_email) return;
+      if (!user_email || !baseUrl) return;
       try {
-        const res = await axios.get(`http://localhost:3001/api/profile?email=${user_email}`);
+        const res = await axios.get(`${baseUrl}/api/profile?email=${user_email}`);
         setCoins(res.data.coins);
         setAvatar(res.data.avatar || {});
       } catch (err) {
@@ -30,11 +31,11 @@ function AvatarPage() {
     };
 
     fetchProfile();
-  }, [user_email]);
+  }, [user_email, baseUrl]);
 
   const handleBuy = async (itemType: keyof Avatar, itemName: string, cost: number) => {
-    if (coins < cost) {
-      alert("Not enough coins!");
+    if (coins < cost || !baseUrl || !user_email) {
+      alert("Not enough coins or invalid user.");
       return;
     }
 
@@ -42,7 +43,7 @@ function AvatarPage() {
     const updatedCoins = coins - cost;
 
     try {
-      await axios.post("http://localhost:3001/api/profile/update", {
+      await axios.post(`${baseUrl}/api/profile/update`, {
         email: user_email,
         coins: updatedCoins,
         avatar: updatedAvatar,

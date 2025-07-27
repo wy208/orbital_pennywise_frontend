@@ -9,12 +9,13 @@ interface GoalTableProps {
 
 const GoalTable = ({ tableData, setTableData }: GoalTableProps) => {
   const [error, setError] = useState<string | null>(null);
+  const baseUrl = process.env.REACT_APP_API_URL;
 
   const handleDelete = async (id: number) => {
     const confirmDelete = window.confirm("Delete this goal?");
-    if (confirmDelete) {
+    if (confirmDelete && baseUrl) {
       try {
-        await axios.delete(`http://localhost:3001/api/goals/${id}`);
+        await axios.delete(`${baseUrl}/api/goals/${id}`);
         setTableData(prev => prev.filter(goa => goa.id !== id));
       } catch (err: any) {
         setError(err.message || "Failed to delete goal.");
