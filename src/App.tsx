@@ -25,18 +25,10 @@ function App() {
 
     const user = getAuth().currentUser;
     const today = new Date().toISOString().slice(0, 10);
-
-    const baseUrl = process.env.REACT_APP_API_URL;
-    if (!baseUrl) {
-      console.error("❌ REACT_APP_API_URL is not defined.");
-    }
-
-    if (user && baseUrl) {
-      axios.post(`${baseUrl}/api/login-reward`, {
+    if (user) {
+      axios.post('${process.env.REACT_APP_API_URL}/api/login-reward', {
         email: user.email,
         date: today,
-      }).catch((err) => {
-        console.error("🚨 Failed to send login-reward:", err);
       });
     }
 
@@ -52,12 +44,13 @@ function App() {
   }
 
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <div className="min-h-screen bg-purple-100 text-gray-900">
         <header className="p-4 flex items-center justify-between">
           <img src={logo} alt="logo" className="h-12" />
         </header>
 
+        {/* ✅ Styled Navigation Bar */}
         <nav className="flex flex-wrap gap-3 px-4 py-3">
           {[
             { to: "/", label: "Home" },
